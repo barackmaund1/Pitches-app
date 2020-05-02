@@ -1,0 +1,25 @@
+<div class="ui items">
+    {% for post in posts %}
+    <div class="item">
+        <div class="image">
+            <div class="ui placeholder">
+                <div class="square image"></div>
+            </div>
+        </div>
+        <div class="middle aligned content">
+            <a class="header" href="{{ _(post.en_url) }}">{{ _(post.en_title) }}</a>
+            <div class="meta">
+                <span>{{ _(post.en_subtitle) }}</span>
+            </div>
+            <div class="description">
+                <p>
+                    {{ _(post.en_description) }}
+                </p>
+            </div>
+            {% for category in post.categories %}
+            <a class="ui grey label"> <i class="fas fa-globe"></i> {{ _(category.en_name) }} </a>
+            {% endfor %}
+        </div>
+
+    </div>
+    {% endfor %}
