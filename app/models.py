@@ -1,7 +1,7 @@
 from . import db
 from datetime import datetime
 from werkzeug.security import generate_password_hash,check_password_hash
-from flask_login import UserMixin
+from flask_login import UserMixin,current_user
 from . import login_manager
 
 
@@ -13,8 +13,6 @@ category_post = db.Table('category_post',
                          db.Column('posts_id', db.Integer, db.ForeignKey('posts.id')),
                          db.Column('categories_id', db.Integer, db.ForeignKey('categories.id'))
 )
-
-
 
 class Category(db.Model):
     __tablename__ = 'categories'
@@ -46,12 +44,9 @@ class Post(db.Model):
         db.session.add(self)
         db.session.commit()
 
-        
     def __repr__(self):
         return f'Post {self.post}'
     
-
- 
 class User(db.Model,UserMixin):
     __tablename__='users'
 
@@ -65,7 +60,7 @@ class User(db.Model,UserMixin):
     password=db.Column(db.String(120),nullable=False)
     image_file=db.Column(db.String(20),nullable=False,default='default.jpg')
     bio = db.Column(db.String(255))
-    
+
     @property
     def password(self):
         raise AttributeError('You cannot read the password attribute')
@@ -91,9 +86,6 @@ class Comment(db.Model):
     user_comment=db.Column(db.String)
     user_id = db.Column(db.Integer,db.ForeignKey('users.id'),nullable = False)
     
-   
-    
-
     def save_comment(self):
         db.session.add(self)
         db.session.commit()
@@ -105,7 +97,6 @@ class Comment(db.Model):
     def __repr__(self):
         return f'comment:{self.comment}'    
 
-
 class Upvote(db.Model):
     __tablename__ = 'upvotes'
 
@@ -113,7 +104,6 @@ class Upvote(db.Model):
     user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer,db.ForeignKey('posts.id'))
     
-
     def save(self):
         db.session.add(self)
         db.session.commit()
@@ -134,7 +124,6 @@ class Downvote(db.Model):
     user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer,db.ForeignKey('posts.id'))
     
-
     def save(self):
         db.session.add(self)
         db.session.commit()

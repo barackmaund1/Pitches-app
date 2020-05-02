@@ -2,10 +2,10 @@ from flask import render_template,request,redirect,url_for,abort
 from . import main
 from ..models import Category,Post,User
 from flask_login import login_required,login_user, current_user, logout_user
-from .. import app, db, bcrypt
+from .. import  db
 import os
 import secrets
-from PIL import Image
+from .. import db,photos
 
 
 @main.route('/',methods = ['GET','POST'])
@@ -28,7 +28,7 @@ def save_picture(form_picture):
     return picture_fn
 
 
-@app.route("/account", methods=['GET', 'POST'])
+@main.route("/account", methods=['GET', 'POST'])
 @login_required
 def account():
     form = UpdateAccountForm()
