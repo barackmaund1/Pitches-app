@@ -1,7 +1,13 @@
 from . import db
 from datetime import datetime
 from werkzeug.security import generate_password_hash,check_password_hash
+from flask_login import UserMixin
+from . import login_manager
 
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 category_post = db.Table('category_post',
                          db.Column('posts_id', db.Integer, db.ForeignKey('posts.id')),
@@ -46,7 +52,7 @@ class Post(db.Model):
     
 
  
-class User(db.Model):
+class User(db.Model,UserMixin):
     __tablename__='users'
 
     id = db.Column(db.Integer,primary_key = True)

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        {% if title %}
+        <title> {{ title }}</title>
+        {% else %}
+        <title> Welcome to the best Pitches</title>
+        {% endif %}
+    </head>
+    <body>
+    
+        {% extends 'bootstrap/base.html'%}
+
+        {%block styles %}
+
+            {{super() }}
+            <!-- Importing the simple mde css and js files   -->
+
+
+        {% endblock %}   
+       
+         <!-- Navbar block  --> 
+        {% block navbar %}
+        {% include 'navbar.html' %}
+        {% endblock %}
+
+        {% block content %}
+            {%include "movie.html"%}
+        {% endblock%}
+        
+    </body>
+</html>
