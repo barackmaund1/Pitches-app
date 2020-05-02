@@ -12,10 +12,10 @@ category_post = db.Table('category_post',
 class Category(db.Model):
     __tablename__ = 'categories'
     id = db.Column(db.Integer, primary_key=True)
-    en_name = db.Column(db.String(128))
-    en_url = db.Column(db.String(128))
-    de_name = db.Column(db.String(128))
-    de_url = db.Column(db.String(128))
+    name = db.Column(db.String(128))
+    name = db.Column(db.String(128))
+    name = db.Column(db.String(128))
+    dname = db.Column(db.String(128))
 
 class Post(db.Model):
     __tablename__ = 'posts'
@@ -28,13 +28,12 @@ class Post(db.Model):
                                  backref=db.backref('posts', lazy='dynamic'),
                                  lazy='dynamic')
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
-    upvote = db.relationship('Upvote',backref='pitch',lazy='dynamic')
-    downvote = db.relationship('Downvote',backref='pitch',lazy='dynamic')
+    upvote = db.relationship('Upvote',backref='post',lazy='dynamic')
+    downvote = db.relationship('Downvote',backref='post',lazy='dynamic')
     en_title = db.Column(db.String(128))
     en_subtitle = db.Column(db.String(128))
     en_description = db.Column(db.String(256))
-    en_body = db.Column(db.Text)
-    en_url = db.Column(db.String(128))
+   
 
     def save_post(self):
         db.session.add(self)
@@ -45,20 +44,21 @@ class Post(db.Model):
         return f'Post {self.post}'
     
 
-
+ 
 class User(db.Model):
     __tablename__='users'
 
     id = db.Column(db.Integer,primary_key = True)
-    username = db.Column(db.String(255))
-    posts=db.relationship('Post',backref='user',lazy='dynamic')
+    username = db.Column(db.String(255),unique=True,nullable=False)
+    posts=db.relationship('Post',backref='author',lazy='dynamic')
     comment = db.relationship('Comment', backref='user', lazy='dynamic')
-    upvote = db.relationship('Upvote',backref='pitch',lazy='dynamic')
-    downvote = db.relationship('Downvote',backref='pitch',lazy='dynamic')
-
-
+    upvote = db.relationship('Upvote',backref='user',lazy='dynamic')
+    downvote = db.relationship('Downvote',backref='user',lazy='dynamic')
+    email = db.Column(db.String(120),unique=True,nullable=False)
+    password=db.Column(db.String(120),nullable=False)
+    image_file=db.Column(db.String(20),nullable=False,default='default.jpg')
     def __repr__(self):
-        return f'User {self.username}'
+        return f'User"{self.username}","{self.email}","{self.image_file}"'
 
     
 class Comment(db.Model):
@@ -90,7 +90,7 @@ class Upvote(db.Model):
 
     id = db.Column(db.Integer,primary_key=True)
     user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
-    pitch_id = db.Column(db.Integer,db.ForeignKey('posts.id'))
+    post_id = db.Column(db.Integer,db.ForeignKey('posts.id'))
     
 
     def save(self):
@@ -111,7 +111,7 @@ class Downvote(db.Model):
 
     id = db.Column(db.Integer,primary_key=True)
     user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
-    pitch_id = db.Column(db.Integer,db.ForeignKey('posts.id'))
+    post_id = db.Column(db.Integer,db.ForeignKey('posts.id'))
     
 
     def save(self):
