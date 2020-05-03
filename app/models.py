@@ -25,7 +25,6 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    active = db.Column(db.Boolean, default="0")
     categories = db.relationship('Category',
                                  secondary=category_post,
                                  backref=db.backref('posts', lazy='dynamic'),
@@ -36,7 +35,7 @@ class Post(db.Model):
     title = db.Column(db.String(128))
     author= db.Column(db.String(128))
     description = db.Column(db.String(256))
-    Category=db.Column(db.String(128),index=True,nullable=False)
+    category=db.Column(db.String(128),index=True,nullable=False)
 
     def save_post(self):
         db.session.add(self)
@@ -47,7 +46,7 @@ class Post(db.Model):
         return posts 
      
     @classmethod
-    def get_posts(cls,category):
+    def get_post(cls,category):
         posts=Post.query.filter_by(category=category).all()
         return posts
 
@@ -59,7 +58,7 @@ class User(db.Model,UserMixin):
 
     id = db.Column(db.Integer,primary_key = True)
     username = db.Column(db.String(255),unique=True,nullable=False)
-    posts=db.relationship('Post',backref='author',lazy='dynamic')
+    posts=db.relationship('Post',backref='user',lazy='dynamic')
     comment = db.relationship('Comment', backref='user', lazy='dynamic')
     upvote = db.relationship('Upvote',backref='user',lazy='dynamic')
     downvote = db.relationship('Downvote',backref='user',lazy='dynamic')

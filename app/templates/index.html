@@ -2,20 +2,30 @@
 {% import 'macros.html' as macro %}
 {% block content %}
 <div class="container">
-    <div class="tab-content">
-        <div  class="container tab-pane active" id="bible"><br>
-            {{ macro.display(bible) }}
-           <a class=""class ="one" href="#">Bible</a>
-        </div>
-        <div  class="container tab-pane fade" id="love"><br>
-            {{ macro.display(love)}}
-            <a class=""class ="one" href="#">Love</a>
-        </div>
-        <div  class="container tab-pane fade" id="motivation"><br>
-            {{ macro.display(motivation) }}
-            <a class=""class ="one" href="#">motivation</a>
-        </div>
-        
+    <div class="row">
+         <div class='col-md-4'>
+            <div  class="container tab-pane " id="bible"><br>
+                <a class ="one" href="#">Bible</a>
+                {{ macro.display(bible) }}
+               
+            </div>
+         </div>
+         <div class='col-md-4'>
+            <div  class="container tab-pane " id="love"><br>
+                <a class ="one" href="#">Love</a>
+                {{ macro.display(love)}}
+                
+            </div>
+         </div>
+         <div class='col-md-4'>
+            <div  class="container tab-pane " id="motivation"><br>
+                <a class ="one" href="#">motivation</a>
+                {{ macro.display(motivation) }}
+               
+            </div>
+         </div>
+            
     </div>
+    
 </div>
 {% endblock%}

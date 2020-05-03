@@ -12,9 +12,9 @@ from .forms import UpdateAccountForm,NewPost
 @main.route('/',methods = ['GET','POST'])
 def index():
 
-    bible=get_posts('bible')
-    motivation=get_posts('motivation')
-    love=get_posts('love')
+    bible=Post.get_post('bible')
+    motivation=Post.get_post('motivation')
+    love=Post.get_post('love')
     return render_template('index.html',bible=bible,motivation=motivation,love=love)
 
 @main.route('/new_post',methods = ['GET','POST'])
@@ -25,7 +25,9 @@ def new_post():
         title=form.title.data
         description=form.description.data
         author=form.author.data
-        post=Post(title=title,description=description,author=author,user =current_user)
+        category=form.category.data
+        user_id = current_user
+        post=Post(title=title,description=description,category=category,author=author,user_id =current_user)
         post.save_post()
         flash('Your pitch has been created!','success')
         return redirect(url_for('index'))
