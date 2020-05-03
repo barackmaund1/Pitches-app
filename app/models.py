@@ -57,7 +57,7 @@ class User(db.Model,UserMixin):
     upvote = db.relationship('Upvote',backref='user',lazy='dynamic')
     downvote = db.relationship('Downvote',backref='user',lazy='dynamic')
     email = db.Column(db.String(120),unique=True,nullable=False)
-    password=db.Column(db.String(120),nullable=False)
+    pass_secure=db.Column(db.String(120),nullable=False)
     image_file=db.Column(db.String(20),nullable=False,default='default.jpg')
     bio = db.Column(db.String(255))
 
