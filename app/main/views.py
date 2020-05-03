@@ -11,21 +11,22 @@ from .forms import UpdateAccountForm,NewPost
 
 @main.route('/',methods = ['GET','POST'])
 def index():
-    posts = Post.query.filter_by(active="1").order_by(Post.timestamp.desc())
-    return render_template('index.html', posts=posts)
+
+    bible=get_posts('bible')
+    motivation=get_posts('motivation')
+    love=get_posts('love')
+    return render_template('index.html',bible=bible,motivation=motivation,love=love)
 
 @main.route('/new_post',methods = ['GET','POST'])
 @login_required
 def new_post():
     form=NewPost()
     if form.validate_on_submit():
-        en_title=form.en_title.data
-        en_subtitle=form.en_subtitle
-        en_description=form.en_description
-        author_id=current_user
-        post=Post(en_title=en_title,en_subtitle=en_subtitle,en_description=en_description,author_id =current_user)
-        db.session.add(post)
-        db.session.commit()
+        title=form.title.data
+        description=form.description.data
+        author=form.author.data
+        post=Post(title=title,description=description,author=author,user =current_user)
+        post.save_post()
         flash('Your pitch has been created!','success')
         return redirect(url_for('index'))
     return render_template('new_post.html',title='New pitch',form=form,legend='New Post')    

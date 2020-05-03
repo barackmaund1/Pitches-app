@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from wtforms import StringField,TextAreaField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField,TextAreaField,SelectField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError,Required
 from ..models import User
 
@@ -28,7 +28,8 @@ class UpdateAccountForm(FlaskForm):
                 raise ValidationError('That email is taken. Please choose another')
 
 class NewPost(FlaskForm):
-    en_title= StringField('Title', validators=[Required()])  
-    en_subtitle=StringField('Author', validators=[Required()]) 
-    en_description=TextAreaField('Your Pitch', validators=[Required()])
+    title= StringField('Title', validators=[Required()])  
+    author=StringField('Author', validators=[Required()]) 
+    description=TextAreaField('Your Pitch', validators=[Required()])
+    category = SelectField('Category', choices=[('Bible','Bible'),('Motivation','Motivation'),('Love','Love')],validators=[Required()])
     submit = SubmitField('Pitch')
