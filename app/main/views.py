@@ -1,6 +1,6 @@
 from flask import render_template,request,redirect,url_for,abort,app,flash
 from . import main
-from ..models import Category,Post,User,Comment,Upvote,Downvote
+from ..models import Post,User,Comment,Upvote,Downvote
 from flask_login import login_required,login_user, current_user, logout_user
 from .. import  db,photos
 import os
@@ -11,11 +11,11 @@ from .forms import UpdateAccountForm,NewPost
 
 @main.route('/',methods = ['GET','POST'])
 def index():
-
-    bible=Post.get_post('bible')
-    motivation=Post.get_post('motivation')
-    love=Post.get_post('love')
-    return render_template('index.html',bible=bible,motivation=motivation,love=love)
+    general=Post.query.all()
+    bible=Post.query.filter_by(category='bible').all()
+    motivation=Post.query.filter_by(category='bible').all()
+    love=Post.query.filter_by(category='bible').all()
+    return render_template('index.html',general=general,bible=bible,motivation=motivation,love=love)
 
 @main.route('/new_post',methods = ['GET','POST'])
 @login_required
@@ -27,11 +27,25 @@ def new_post():
         author=form.author.data
         category=form.category.data
         user_id = current_user
-        post=Post(title=title,description=description,category=category,author=author,user_id =current_user)
+        post=Post(title=title,description=description,category=category,author=author,user_id =current_user._get_current_object())
         post.save_post()
         flash('Your pitch has been created!','success')
         return redirect(url_for('index'))
-    return render_template('new_post.html',title='New pitch',form=form,legend='New Post')    
+    return render_template('new_post.html',title='New pitch',form=form,legend='New Post')  
+@main.route('/comment/<int:post_id>', methods = ['POST','GET'])
+@login_required
+def comment(pitch_id):
+    form = CommentForm()
+    post = Post.query.get(post_id)
+    all_comments = Comment.get_comments
+    if form.validate_on_submit():
+        comment = form.comment.data 
+        post_id = post_id
+        user_id = current_user._get_current_object().id
+        new_comment = Comment(comment = comment,user_id = user_id,post_id = post_id)
+        new_comment.save_comment()
+        return redirect(url_for('main.comment', pitch_id = pitch_id))
+    return render_template('comment.html', form =form, pitch = pitch,all_comments=all_comments)      
 
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)

@@ -9,26 +9,11 @@ from . import login_manager
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-category_post = db.Table('category_post',
-                         db.Column('posts_id', db.Integer, db.ForeignKey('posts.id')),
-                         db.Column('categories_id', db.Integer, db.ForeignKey('categories.id'))
-)
-
-class Category(db.Model):
-    __tablename__ = 'categories'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128))
-    
-
 class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    categories = db.relationship('Category',
-                                 secondary=category_post,
-                                 backref=db.backref('posts', lazy='dynamic'),
-                                 lazy='dynamic')
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
     upvote = db.relationship('Upvote',backref='post',lazy='dynamic')
     downvote = db.relationship('Downvote',backref='post',lazy='dynamic')
@@ -45,11 +30,7 @@ class Post(db.Model):
         posts=Post.query.filter_by(category_id=id).all() 
         return posts 
      
-    @classmethod
-    def get_post(cls,category):
-        posts=Post.query.filter_by(category=category).all()
-        return posts
-
+    
     def __repr__(self):
         return f'Post {self.post}'
     
@@ -99,6 +80,7 @@ class Comment(db.Model):
     def get_comments(cls,id):
         comments=Comment.query.filter_by(post_id=id).all()
         return comments
+        
 
     def __repr__(self):
         return f'comment:{self.comment}'    
