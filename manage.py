@@ -21,7 +21,7 @@ def test():
     unittest.TextTestRunner(verbosity=2).run(tests)
 @manager.shell
 def make_shell_context():
-    return dict(app = app,db = db,Post=Post,User=User,Comment=Comment,Upvote=Upvote,Downvote=Downvote )
+    return dict(app = app,db = db,User=User,Post=Post,Comment=Comment,Upvote=Upvote,Downvote=Downvote )
 
 if __name__ == '__main__':
   manager.run()

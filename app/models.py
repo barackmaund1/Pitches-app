@@ -5,45 +5,19 @@ from flask_login import UserMixin,current_user
 from . import login_manager
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
-class Post(db.Model):
-    __tablename__ = 'posts'
-    id = db.Column(db.Integer, primary_key=True)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    comments = db.relationship('Comment', backref='post', lazy='dynamic')
-    upvote = db.relationship('Upvote',backref='post',lazy='dynamic')
-    downvote = db.relationship('Downvote',backref='post',lazy='dynamic')
-    title = db.Column(db.String(255),nullable = False)
-    author= db.Column(db.String(255),nullable = False)
-    description = db.Column(db.Text(),nullable = False)
-    category=db.Column(db.String(255),index=True,nullable=False)
-
-    def save_post(self):
-        db.session.add(self)
-        db.session.commit()
-    
-    
-    def __repr__(self):
-        return f'Post {self.title},{self.author},{self.description},{self.category}'
-    
-class User(db.Model,UserMixin):
+class User(UserMixin,db.Model):
     __tablename__='users'
-
     id = db.Column(db.Integer,primary_key = True)
     username = db.Column(db.String(255),unique=True,nullable=False)
-    posts=db.relationship('Post',backref='user',lazy='dynamic')
-    comment = db.relationship('Comment', backref='user', lazy='dynamic')
-    upvote = db.relationship('Upvote',backref='user',lazy='dynamic')
-    downvote = db.relationship('Downvote',backref='user',lazy='dynamic')
     email = db.Column(db.String(120),unique=True,nullable=False)
     pass_secure=db.Column(db.String(120),nullable=False)
     image_file=db.Column(db.String(20),nullable=False,default='default.jpg')
     bio = db.Column(db.String(255))
-
+    post=db.relationship('Post',backref='user',lazy='dynamic')
+    comment = db.relationship('Comment', backref='user', lazy='dynamic')
+    upvote = db.relationship('Upvote',backref='user',lazy='dynamic')
+    downvote = db.relationship('Downvote',backref='user',lazy='dynamic')
+    
     @property
     def password(self):
         raise AttributeError('You cannot read the password attribute')
@@ -57,7 +31,30 @@ class User(db.Model,UserMixin):
         return check_password_hash(self.pass_secure,password)
     
     def __repr__(self):
-        return f'User"{self.username}","{self.email}","{self.image_file}"'
+        return f'User{self.username},{self.email},{self.image_file}'
+
+class Post(db.Model):
+    __tablename__ = 'posts'
+    id = db.Column(db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    title = db.Column(db.String(255),nullable = False)
+    author= db.Column(db.String(255),nullable = False)
+    description = db.Column(db.Text(),nullable = False)
+    category=db.Column(db.String(255),index=True,nullable=False)
+    comment = db.relationship('Comment', backref='post', lazy='dynamic')
+    upvote = db.relationship('Upvote',backref='post',lazy='dynamic')
+    downvote = db.relationship('Downvote',backref='post',lazy='dynamic')
+    
+
+    def save_post(self):
+        db.session.add(self)
+        db.session.commit()
+    
+    
+    def __repr__(self):
+        return f'Post {self.title},{self.author},{self.description},{self.category}'
+    
 
     
 class Comment(db.Model):
@@ -118,4 +115,7 @@ class Downvote(db.Model):
 
     def __repr__(self):
         return f'{self.user_id}:{self.post_id}'               
-            
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+           

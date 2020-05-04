@@ -22,8 +22,9 @@ def index():
 def new_post():
     form=NewPost()
     if form.validate_on_submit():
-        new_post=Post(title=form.title.data,description=form.description.data,category=form.category.data,
-        author=form.author.data,user_id =current_user._get_current_object())
+        user_id=current_user
+        new_post=Post(title=form.title.data,author=form.author.data,description=form.description.data,category=form.category.data,
+        user_id =current_user._get_current_object())
         new_post.save_post()
         # db.session.add(new_post)
         # db.session.commit()
