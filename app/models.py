@@ -28,7 +28,7 @@ class Post(db.Model):
     
     
     def __repr__(self):
-        return f'Post {self.post}'
+        return f'Post {self.title},{self.author},{self.description},{self.category}'
     
 class User(db.Model,UserMixin):
     __tablename__='users'
