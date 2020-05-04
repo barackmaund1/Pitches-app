@@ -7,9 +7,9 @@ import os
 import secrets
 from .. import db,photos
 from .forms import UpdateAccountForm,NewPost
+from PIL import Image
 
-
-@main.route('/',methods = ['GET','POST'])
+@main.route('/')
 def index():
     general=Post.query.all()
     bible=Post.query.filter_by(category='bible').all()
@@ -17,24 +17,22 @@ def index():
     love=Post.query.filter_by(category='bible').all()
     return render_template('index.html',general=general,bible=bible,motivation=motivation,love=love)
 
-@main.route('/new_post',methods = ['GET','POST'])
+@main.route('/new_post',methods = ['POST','GET'])
 @login_required
 def new_post():
     form=NewPost()
     if form.validate_on_submit():
-        title=form.title.data
-        description=form.description.data
-        author=form.author.data
-        category=form.category.data
-        user_id = current_user
-        post=Post(title=title,description=description,category=category,author=author,user_id =current_user._get_current_object())
-        post.save_post()
+        new_post=Post(title=form.title.data,description=form.description.data,category=form.category.data,
+        author=form.author.data,user_id =current_user._get_current_object())
+        new_post.save_post()
+        # db.session.add(new_post)
+        # db.session.commit()
         flash('Your pitch has been created!','success')
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
     return render_template('new_post.html',title='New pitch',form=form,legend='New Post')  
 @main.route('/comment/<int:post_id>', methods = ['POST','GET'])
 @login_required
-def comment(pitch_id):
+def comment(post_id):
     form = CommentForm()
     post = Post.query.get(post_id)
     all_comments = Comment.get_comments
@@ -47,13 +45,48 @@ def comment(pitch_id):
         return redirect(url_for('main.comment', pitch_id = pitch_id))
     return render_template('comment.html', form =form, pitch = pitch,all_comments=all_comments)      
 
+@main.route('/like/<int:id>',methods = ['POST','GET'])
+@login_required
+def upvote(id):
+    get_posts = Upvote.get_upvotes(id)
+    valid_string = f'{current_user.id}:{id}'
+    for post in get_posts:
+        to_str = f'{post}'
+        print(valid_string+" "+to_str)
+        if valid_string == to_str:
+            return redirect(url_for('main.index',id=id))
+        else:
+            continue
+    new_vote = Upvote(user = current_user, post_id=id)
+    new_vote.save()
+    return redirect(url_for('main.index',id=id))
+
+@main.route('/dislike/<int:id>',methods = ['POST','GET'])
+@login_required
+def downvote(id):
+    posts = Downvote.get_downvotes(id)
+    valid_string = f'{current_user.id}:{id}'
+    for post in posts:
+        to_str = f'{post}'
+        print(valid_string+" "+to_str)
+        if valid_string == to_str:
+            return redirect(url_for('main.index',id=id))
+        else:
+            continue
+    new_downvote = Downvote(user = current_user, post_id=id)
+    new_downvote.save()
+    return redirect(url_for('main.index',id = id))
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(form_picture.filename)
     picture_fn = random_hex + f_ext
     picture_path = os.path.join(main.root_path, 'static/photos', picture_fn)
     form_picture.save(picture_path)
-
+     
+    output_size=(125,125)
+    i=Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
 
     return picture_fn
 

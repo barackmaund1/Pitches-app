@@ -32,7 +32,7 @@ class NewPost(FlaskForm):
     author=StringField('Author', validators=[Required()]) 
     description=TextAreaField('Your Pitch', validators=[Required()])
     category = SelectField('Category', choices=[('Bible','Bible'),('Motivation','Motivation'),('Love','Love')],validators=[Required()])
-    submit = SubmitField('Pitch')
+    submit = SubmitField('post')
 class CommentForm(FlaskForm):
     comment = TextAreaField('Leave a comment',validators=[Required()])
     submit = SubmitField('Comment')  

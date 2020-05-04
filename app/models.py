@@ -12,24 +12,20 @@ def load_user(user_id):
 class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
     upvote = db.relationship('Upvote',backref='post',lazy='dynamic')
     downvote = db.relationship('Downvote',backref='post',lazy='dynamic')
-    title = db.Column(db.String(128))
-    author= db.Column(db.String(128))
-    description = db.Column(db.String(256))
-    category=db.Column(db.String(128),index=True,nullable=False)
+    title = db.Column(db.String(255),nullable = False)
+    author= db.Column(db.String(255),nullable = False)
+    description = db.Column(db.Text(),nullable = False)
+    category=db.Column(db.String(255),index=True,nullable=False)
 
     def save_post(self):
         db.session.add(self)
         db.session.commit()
-    @classmethod    
-    def get_posts(cls,id) :
-        posts=Post.query.filter_by(category_id=id).all() 
-        return posts 
-     
+    
     
     def __repr__(self):
         return f'Post {self.post}'
