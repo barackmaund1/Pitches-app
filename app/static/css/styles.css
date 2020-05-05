@@ -10,6 +10,7 @@
 .one{
     font-size:25px ;
     font-weight: 500;
+    margin-left:50px ;
 }
 .media-body{
     
@@ -17,4 +18,24 @@
     border-right: 2px solid wheat;
     border-radius: 2%;
     box-shadow: 2px 0 2px rgb(163, 152, 131);
+}
+
+.general{
+    margin-top:1% ;
+}
+.post{
+    border-left: 2px solid rgb(161, 157, 149);
+    background-color:lavender;
+    backface-visibility: visible;
+    transition: all .5s ease-in-out;
+}
+.post:hover{
+    background-color: rgb(207, 239, 241);
+    color: darkslategrey;
+    -ms-transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1); 
+}
+.body{
+    background-color: rgb(238, 240, 234);
 }

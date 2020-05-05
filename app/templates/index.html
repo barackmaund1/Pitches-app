@@ -2,37 +2,9 @@
 {% import 'macros.html' as macro %}
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class='col-md-3'>
-            <div  class="container tab-pane " id="bible"><br>
-                <a class ="one" href="#">General</a>
-                {{ macro.display(general) }}
-               
-            </div>
-         </div>
-         <div class='col-md-3'>
-            <div  class="container tab-pane " id="bible"><br>
-                <a class ="one" href="#">Bible</a>
-                {{ macro.display(bible) }}
-               
-            </div>
-         </div>
-         <div class='col-md-3'>
-            <div  class="container tab-pane " id="love"><br>
-                <a class ="one" href="#">Love</a>
-                {{ macro.display(love)}}
-                
-            </div>
-         </div>
-         <div class='col-md-3'>
-            <div  class="container tab-pane " id="motivation"><br>
-                <a class ="one" href="#">motivation</a>
-                {{ macro.display(motivation) }}
-               
-            </div>
-         </div>
-            
+    <h1 class="text-center">Given one minute chance </h1>
+    <div class="general">
+        {{macro.display(general)}}
     </div>
-    
 </div>
 {% endblock%}

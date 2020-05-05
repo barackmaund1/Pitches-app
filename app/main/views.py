@@ -6,28 +6,27 @@ from .. import  db,photos
 import os
 import secrets
 from .. import db,photos
-from .forms import UpdateAccountForm,NewPost
+from .forms import UpdateAccountForm,NewPost,CommentForm
 from PIL import Image
 
 @main.route('/')
 def index():
     general=Post.query.all()
-    bible=Post.query.filter_by(category='bible').all()
-    motivation=Post.query.filter_by(category='bible').all()
-    love=Post.query.filter_by(category='bible').all()
-    return render_template('index.html',general=general,bible=bible,motivation=motivation,love=love)
+    
+    return render_template('index.html',general=general)
 
 @main.route('/new_post',methods = ['POST','GET'])
 @login_required
 def new_post():
     form=NewPost()
     if form.validate_on_submit():
-        user_id=current_user
+        user_id=current_user.id
+        # import pdb; pdb.set_trace()
         new_post=Post(title=form.title.data,author=form.author.data,description=form.description.data,category=form.category.data,
-        user_id =current_user._get_current_object())
-        new_post.save_post()
-        # db.session.add(new_post)
-        # db.session.commit()
+        user_id =user_id)
+        
+        db.session.add(new_post)
+        db.session.commit()
         flash('Your pitch has been created!','success')
         return redirect(url_for('main.index'))
     return render_template('new_post.html',title='New pitch',form=form,legend='New Post')  
@@ -36,15 +35,15 @@ def new_post():
 def comment(post_id):
     form = CommentForm()
     post = Post.query.get(post_id)
-    all_comments = Comment.get_comments
+    all_comments = Comment.get_comments(post_id)
     if form.validate_on_submit():
-        comment = form.comment.data 
+        user_comment = form.comment.data 
         post_id = post_id
-        user_id = current_user._get_current_object().id
-        new_comment = Comment(comment = comment,user_id = user_id,post_id = post_id)
+        user_id = current_user.id
+        new_comment = Comment(user_comment =user_comment,user_id = user_id,post_id = post_id)
         new_comment.save_comment()
-        return redirect(url_for('main.comment', pitch_id = pitch_id))
-    return render_template('comment.html', form =form, pitch = pitch,all_comments=all_comments)      
+        return redirect(url_for('main.comment', post_id = post_id))
+    return render_template('comment.html', form =form, post = post,all_comments=all_comments)      
 
 @main.route('/like/<int:id>',methods = ['POST','GET'])
 @login_required
